@@ -40,10 +40,12 @@ add_genders_variables <- function(data) {
   }
   ## get first names (in lower case)
   nms <- trimws(tolower(usr$name))
-  nms <- sapply(strsplit(nms, " "), "[[", 1L)
+  nms <- strsplit(nms, " ")
+  nms[lengths(nms) == 0L] <- NA_character_
+  nms <- sapply(nms, "[[", 1L)
   usr$ssa_search_name <- nms
   ## lookup gender estimates
-  g <- gender::gender(unique(nms), years = c(1930, 2012), method = "ssa")
+  g <- gender::gender(unique(nms[!is.na(nms)]), years = c(1930, 2012), method = "ssa")
   ## only keep columns 1-4
   g <- g[, 1:4]
   ## rename the "name" variable
